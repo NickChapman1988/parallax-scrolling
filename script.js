@@ -20,6 +20,20 @@ backgroundLayer4.src = 'media/layer-4.png';
 const backgroundLayer5 = new Image();
 backgroundLayer5.src = 'media/layer-5.png';
 
+// set slider value to match gameSpeed variable
+const slider = document.getElementById('slider');
+slider.value = gameSpeed;
+// set display to match current gameSpeed variable
+const showGameSpeed = document.getElementById('showGameSpeed');
+showGameSpeed.innerHTML = gameSpeed;
+// change event on slider fetches value of gameSpeed variable, 
+// assigns value to span element display
+slider.addEventListener('change', function(e){
+    gameSpeed = e.target.value;
+    showGameSpeed.innerHTML = e.target.value;
+})
+
+
 // JS class to define properties of each background layer
 class Layer {
     constructor(image, speedModifier){
@@ -29,8 +43,6 @@ class Layer {
         // sets width and height to match image size
         this.width = 2400;
         this.height = 700;
-        // sets repeat image to start at end of first image
-        this.x2 = this.width;
         // sets image value to match image argument passed to function
         this.image = image;
         // sets speedModifier to match speedModifier argument passed to function
@@ -41,24 +53,16 @@ class Layer {
     // method to scroll layers horizontally and reset when off screen
     update(){
         this.speed = gameSpeed * this.speedModifier;
-        // if image goes offscreen (width -2400px) 
+        // if image goes offscreen (width -2400px) reset position to 0
         if (this.x <= -this.width){
-            // set width to position of repeat image, 
-            // offset by speed to prevent image gap
-            this.x = this.width + this.x2 - this.speed;
-        }
-        if (this.x2 <= -this.width){
-            // set width to position of repeat image, 
-            // offset by speed to prevent image gap
-            this.x2 = this.width + this.x - this.speed;
+            this.x = 0;
         }
         this.x = Math.floor(this.x - this.speed);
-        this.x2 = Math.floor(this.x2 - this.speed);
     }
     // method to draw 2 copies of layer on canvas at new position
     draw(){
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-        ctx.drawImage(this.image, this.x2, this.y, this.width, this.height);
+        ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
     }
 }
 
